@@ -1,0 +1,150 @@
+<html>
+<head><title>ESP LED color strip</title>
+
+    <style>
+
+      :root {
+
+        --left-width: 190px;
+        --outer-width: 670px;
+        --outer-height: 550px;
+        --universal-margin_hor: 15px;
+        --universal-margin_ver: 30px;
+        --button-width: 130px;
+        --button-height: 75px;
+        --mode-button-padding: 0px;
+        --power-rep-button-padding: 25px;
+        --button-font-size: 20px;
+      }
+
+      div[class*="container"] {
+
+        border: 2px solid;
+        border-radius: 10px;
+        border-color: #c9c9c9;
+        margin: var(--universal-margin_hor);
+
+      }
+
+      .modes-container {
+
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+
+      }
+
+      div[class*="sub"] {
+        justify-content: center;
+      }
+
+      html {
+        font-family: Helvetica;
+        display: inline-block;
+        margin: 0 auto;
+    }
+
+      .outer-container {
+
+        height: var(--outer-height);
+        width: var(--outer-width);
+      }
+
+      .left-sub {
+        float: left;
+        width: var(--left-width);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .right-sub {
+        float: right;
+        width: calc(var(--outer-width) - var(--left-width) - 2*var(--universal-margin_hor));
+
+      }
+
+      button{
+                width: var(--button-width);
+        height: var(--button-height);
+        font-size: var(--button-font-size);
+        transition-duration: 0.2s;
+        border: none;
+        text-decoration: none;
+        border-radius: 5px;
+
+      }
+
+      button[class*="mode"]{
+
+        margin: var(--universal-margin_hor);
+        background-color: #dedede;
+        color: black;
+
+      }
+      button[class*="mode"]:hover{
+
+        background-color: #3779ff;
+        color: white;
+
+      }
+       button[class*="mode"]:active{
+
+        background-color: #3779ff;
+        color: white;
+         transform: translateY(2px);
+
+      }
+
+      .reprogram-button {
+
+        margin: 0;
+        background-color: #d97676;
+        color: white;
+
+      }
+      .reprogram-button:hover {
+
+        background-color: #df5555;
+        color: white;
+
+      }
+      .power-button {
+
+        margin: var(--universal-margin_ver) 0 0 0;
+
+      }
+
+    </style>
+</head>
+<body>
+<div class="outer-container">
+<div class="left-sub">
+<button class="power-button"></button>
+
+  <div class="modes-container">
+
+    <button class="mode-pulse-button">PULSE</button>
+    <button class="mode-transition-button">COLOR TRANS.</button>
+    <button class="mode-static-button">STATIC</button>
+
+  </div>
+
+<button class="reprogram-button">CHANGE COLORS</button>
+  </div>
+  <div class="right-sub">
+    <input type="color">
+
+    <div class="color-status-container">
+
+
+
+    </div>
+
+
+  </div>
+  </div>
+
+
+</body>
+</html>
