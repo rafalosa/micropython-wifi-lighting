@@ -1,12 +1,9 @@
 <html>
 <head><title>ESP LED color strip</title>
-
     <style>
-
       :root {
-
         --left-width: 190px;
-        --outer-width: 670px;
+        --outer-width: 400px;
         --outer-height: 550px;
         --universal-margin_hor: 15px;
         --universal-margin_ver: 30px;
@@ -15,37 +12,36 @@
         --mode-button-padding: 0px;
         --power-rep-button-padding: 25px;
         --button-font-size: 20px;
+        --color-picker-height: 100px;
+        --color-picker-width: 120px;
       }
 
       div[class*="container"] {
-
         border: 2px solid;
         border-radius: 10px;
         border-color: #c9c9c9;
         margin: var(--universal-margin_hor);
-
       }
 
       .modes-container {
-
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-
       }
 
       div[class*="sub"] {
+        display: flex;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       html {
         font-family: Helvetica;
         display: inline-block;
         margin: 0 auto;
-    }
+      }
 
       .outer-container {
-
         height: var(--outer-height);
         width: var(--outer-width);
       }
@@ -53,74 +49,128 @@
       .left-sub {
         float: left;
         width: var(--left-width);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
       }
 
       .right-sub {
-        float: right;
+        float: left;
         width: calc(var(--outer-width) - var(--left-width) - 2*var(--universal-margin_hor));
-
       }
 
       button{
-                width: var(--button-width);
+        width: var(--button-width);
         height: var(--button-height);
         font-size: var(--button-font-size);
-        transition-duration: 0.2s;
+        transition-duration: 0.1s;
         border: none;
         text-decoration: none;
         border-radius: 5px;
-
       }
 
       button[class*="mode"]{
-
         margin: var(--universal-margin_hor);
         background-color: #dedede;
         color: black;
-
       }
+
       button[class*="mode"]:hover{
-
         background-color: #3779ff;
         color: white;
-
       }
-       button[class*="mode"]:active{
 
-        background-color: #3779ff;
-        color: white;
+       button:active{
          transform: translateY(2px);
-
       }
 
       .reprogram-button {
-
         margin: 0;
         background-color: #d97676;
         color: white;
-
       }
-      .reprogram-button:hover {
 
+      .reprogram-button:hover {
         background-color: #df5555;
         color: white;
-
       }
+
       .power-button {
 
-        margin: var(--universal-margin_ver) 0 0 0;
-
+        background-color: #d97676;
+        color: white;
       }
+
+      .power-button:active {
+        background-color: #76d987;
+      }
+
+      .color-picker{
+        width: var(--color-picker-width);
+        height: var(--color-picker-height);
+        margin: var(--universal-margin_ver);
+      }
+
+      .power-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.power-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.power-slider {
+
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d97676;
+  -webkit-transition: .4s;
+  transition: .8s;
+  border-radius: 34px;
+}
+
+.power-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+input:checked + .power-slider {
+  background-color: #76d987;
+}
+
+input:focus + .power-slider {
+}
+
+input:checked + .power-slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+  border-radius: 50%;
+}
 
     </style>
 </head>
 <body>
 <div class="outer-container">
 <div class="left-sub">
-<button class="power-button"></button>
+<label class="power-switch">
+  <input type="checkbox">
+  <span class="power-slider"></span>
+</label>
 
   <div class="modes-container">
 
@@ -133,7 +183,7 @@
 <button class="reprogram-button">CHANGE COLORS</button>
   </div>
   <div class="right-sub">
-    <input type="color">
+    <input type="color" class="color-picker">
 
     <div class="color-status-container">
 
