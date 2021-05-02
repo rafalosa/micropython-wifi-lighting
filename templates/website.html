@@ -44,6 +44,9 @@
       .outer-container {
         height: var(--outer-height);
         width: var(--outer-width);
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
       }
 
       .left-sub {
@@ -92,28 +95,19 @@
         color: white;
       }
 
-      .power-button {
-
-        background-color: #d97676;
-        color: white;
-      }
-
-      .power-button:active {
-        background-color: #76d987;
-      }
-
       .color-picker{
         width: var(--color-picker-width);
         height: var(--color-picker-height);
-        margin: var(--universal-margin_ver);
+        margin: var(--universal-margin_ver) 0 ;
       }
 
       .power-switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+        position: relative;
+        top: 20px;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
 
 .power-switch input {
   opacity: 0;
@@ -142,6 +136,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
+
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -161,40 +156,51 @@ input:checked + .power-slider:before {
   transform: translateX(26px);
   border-radius: 50%;
 }
+      .status{
+        font-size:20px;
+      }
+
+      .status-container{
+
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        height: 100px;
+
+      }
 
     </style>
 </head>
 <body>
 <div class="outer-container">
 <div class="left-sub">
+  <form action="" method="post">
 <label class="power-switch">
-  <input type="checkbox">
+  <input name="power_switch" onChange="this.form.submit()" type="checkbox" {%if a[1] == True%} checked {%endif%}>
   <span class="power-slider"></span>
-</label>
+</label></form>
+</label></form>
+    <form action="" method="post">
 
   <div class="modes-container">
 
-    <button class="mode-pulse-button">PULSE</button>
-    <button class="mode-transition-button">COLOR TRANS.</button>
-    <button class="mode-static-button">STATIC</button>
+    <button name="pulse_but" type="submit" class="mode-pulse-button">PULSE</button>
+    <button name="trans_but" type="submit" class="mode-transition-button">COLOR TRANS.</button>
+    <button name="static_but" type="submit" class="mode-static-button">STATIC</button>
 
   </div>
 
-<button class="reprogram-button">CHANGE COLORS</button>
-  </div>
+<button name="reprog_but" type="submit" class="reprogram-button">CHANGE COLORS</button>
+  </form></div>
   <div class="right-sub">
-    <input type="color" class="color-picker">
+    <div class="status-container">
 
-    <div class="color-status-container">
-
-
+    <p class="status">CURRENT MODE: {{a[0]}}</p>
 
     </div>
-
+    <input type="color" class="color-picker">
 
   </div>
   </div>
-
-
 </body>
 </html>
