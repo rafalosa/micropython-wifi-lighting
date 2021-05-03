@@ -4,7 +4,7 @@
       :root {
         --left-width: 190px;
         --outer-width: 400px;
-        --outer-height: 550px;
+        --outer-height: 800px;
         --universal-margin_hor: 15px;
         --universal-margin_ver: 30px;
         --button-width: 130px;
@@ -179,7 +179,6 @@ input:checked + .power-slider:before {
   <input name="power_switch" onChange="this.form.submit()" type="checkbox" {%if a[1] == True%} checked {%endif%}>
   <span class="power-slider"></span>
 </label></form>
-</label></form>
     <form action="" method="post">
 
   <div class="modes-container">
@@ -190,17 +189,16 @@ input:checked + .power-slider:before {
 
   </div>
 
-<button name="reprog_but" type="submit" class="reprogram-button">CHANGE COLORS</button>
-  </form></div>
-  <div class="right-sub">
-    <div class="status-container">
+<button name="reprog_but" type="submit" class="reprogram-button">{%if a[3] == 2%}CONFIRM{%else%}CHANGE COLORS{%endif%}</button>
+      <div class="status-container">
 
-    <p class="status">CURRENT MODE: {{a[0]}}</p>
+    <p class="status">STATUS: {{a[0]}}</p>
 
     </div>
     <input type="color" class="color-picker">
+  </form></div>
 
-  </div>
+
   </div>
 </body>
 </html>

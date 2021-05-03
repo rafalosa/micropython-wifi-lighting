@@ -16,7 +16,7 @@ gc.collect()
 file = open("credentials.txt","r")
 file_content = file.readlines()
 file.close()
-ssid = file_content[0].replace("\n","")
+ssid = file_content[0].replace("\r\n","")
 password = file_content[1]
 
 station = network.WLAN(network.STA_IF)
