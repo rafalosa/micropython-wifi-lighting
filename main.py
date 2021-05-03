@@ -18,7 +18,7 @@ status = {0:"POWER OFF",1:"POWER ON",2:"PROGRAMMING"}
 current_mode = 0
 current_status = 0
 power_on = False
-colors = [(255,0,0),(0,255,0),(0,0,255)]
+colors = [(0,0,0),(0,0,0),(0,0,0)]
 single_color = (0,0,0)
 programming_flag = 0
 

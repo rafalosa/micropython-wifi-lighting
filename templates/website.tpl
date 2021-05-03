@@ -4,7 +4,7 @@
       :root {
         --left-width: 190px;
         --outer-width: 400px;
-        --outer-height: 800px;
+        --outer-height: 400px;
         --universal-margin_hor: 15px;
         --universal-margin_ver: 30px;
         --button-width: 130px;
@@ -12,8 +12,8 @@
         --mode-button-padding: 0px;
         --power-rep-button-padding: 25px;
         --button-font-size: 20px;
-        --color-picker-height: 100px;
-        --color-picker-width: 120px;
+        --color-picker-height: 50px;
+        --color-picker-width: 50px;
       }
 
       div[class*="container"] {
@@ -57,11 +57,13 @@
       .right-sub {
         float: left;
         width: calc(var(--outer-width) - var(--left-width) - 2*var(--universal-margin_hor));
+          margin-top: 50px;
       }
 
       button{
         width: var(--button-width);
         height: var(--button-height);
+        margin: var(--universal-margin_hor);
         font-size: var(--button-font-size);
         transition-duration: 0.1s;
         border: none;
@@ -69,28 +71,38 @@
         border-radius: 5px;
       }
 
-      button[class*="mode"]{
-        margin: var(--universal-margin_hor);
+      button[class*="mode"]:disabled + .reprogram-button:disabled{
+
+          background-color: #c9c9c9;
+          color: #e3e3e3;
+
+      }
+
+      button[class*="mode"]:enabled{
         background-color: #dedede;
         color: black;
       }
 
-      button[class*="mode"]:hover{
+      button[class*="mode"]:hover:enabled{
         background-color: #3779ff;
         color: white;
       }
 
-       button:active{
+       button:active:enabled{
          transform: translateY(2px);
       }
 
-      .reprogram-button {
-        margin: 0;
+      .reprogram-button:enabled {
         background-color: #d97676;
         color: white;
+
+      }
+      .reprogram-button{
+          width: 100px;
+          height: 100px;
       }
 
-      .reprogram-button:hover {
+      .reprogram-button:hover:enabled {
         background-color: #df5555;
         color: white;
       }
@@ -98,7 +110,7 @@
       .color-picker{
         width: var(--color-picker-width);
         height: var(--color-picker-height);
-        margin: var(--universal-margin_ver) 0 ;
+        margin: var(--universal-margin_ver) 15px ;
       }
 
       .power-switch {
@@ -157,7 +169,7 @@ input:checked + .power-slider:before {
   border-radius: 50%;
 }
       .status{
-        font-size:20px;
+        font-size:16px;
       }
 
       .status-container{
@@ -165,9 +177,19 @@ input:checked + .power-slider:before {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        height: 100px;
+        height: 70px;
+          width: 170px;
 
       }
+        .status-container{
+
+            background-color: #c1ffcc;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            text-align: center;
+
+        }
 
     </style>
 </head>
@@ -183,22 +205,21 @@ input:checked + .power-slider:before {
 
   <div class="modes-container">
 
-    <button name="pulse_but" type="submit" class="mode-pulse-button">PULSE</button>
-    <button name="trans_but" type="submit" class="mode-transition-button">COLOR TRANS.</button>
-    <button name="static_but" type="submit" class="mode-static-button">STATIC</button>
+    <button name="pulse_but" type="submit" class="mode-pulse-button" {%if a[2] == 0 and a[3] !=0 %} style="background-color: #3779ff; color: white;"{% endif %} {%if a[3] == 0%} disabled {%endif%}>PULSE</button>
+    <button name="trans_but" type="submit" class="mode-transition-button" {%if a[2] == 1 and a[3] !=0 %} style="background-color: #3779ff; color: white;"{% endif %} {%if a[3] == 0%} disabled {%endif%}>COLOR TRANS.</button>
+    <button name="static_but" type="submit" class="mode-static-button" {%if a[2] == 2 and a[3] !=0 %} style="background-color: #3779ff; color: white;"{% endif %} {%if a[3] == 0%} disabled {%endif%}>STATIC</button>
 
-  </div>
-<input type="color" class="color-picker">
-<button name="reprog_but" type="submit" class="reprogram-button">{%if a[3] == 2%}CONFIRM{%else%}CHANGE COLORS{%endif%}</button>
+  </div></form></div>
+    <form action="" method="post">
+        <div class="right-sub">
+<input name="color_picker" type="color" class="color-picker"  {%if a[3] == 0%} disabled {%endif%}>
+<button name="reprog_but" type="submit" class="reprogram-button"  {%if a[3] == 0%} disabled {%endif%}>{%if a[3] == 2%}CONFIRM{%else%}CHANGE COLORS{%endif%}</button>
       <div class="status-container">
 
     <p class="status">STATUS: {{a[0]}}</p>
 
-    </div>
+    </div></div></form>
 
-  </form></div>
-
-
-  </div>
+</div>
 </body>
 </html>
