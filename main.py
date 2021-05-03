@@ -18,58 +18,92 @@ status = {0:"POWER OFF",1:"POWER ON",2:"PROGRAMMING"}
 current_mode = 0
 current_status = 0
 power_on = False
-colors = [[500,0,0],[200,500,350],[0,0,500]]
+colors = [(255,0,0),(0,255,0),(0,0,255)]
+single_color = (0,0,0)
 programming_flag = 0
 
 
+def turnOffOutput():
+    global pwm_pins
+    pwm_pins[0].duty(0)
+    pwm_pins[1].duty(0)
+    pwm_pins[2].duty(0)
+
+
+def mapValues(values,max_init,max_conv):
+    return tuple(int(value * max_conv/max_init) for value in values)
+
+
+def convertColors(color_hex):
+    color = color_hex.lstrip("#")
+    return tuple(int(color[i:i+2],16) for i in range(0,5,2))
+
+
 async def updateCircuit():
-    global current_mode,current_status,power_on,colors
+    global current_mode,current_status,power_on,colors,single_color
 
     if power_on:
         if current_mode == 0 and current_status == 1:
-            uasyncio.create_task(pulseColor(colors[1]))
+            uasyncio.create_task(pulseColor(single_color))
         elif current_mode == 1 and current_status == 1:
             uasyncio.create_task(transitionColor(colors))
         elif current_mode == 2 and current_status == 1:
-            uasyncio.create_task(staticColor(colors[0]))
+            uasyncio.create_task(staticColor(single_color))
     else:
-        for pin in pwm_pins:
-            pin.duty(0)
+        turnOffOutput()
     return False
 
 
 async def pulseColor(color):
     global current_mode,current_status,pwm_pins
-    duty = 0
-    step = 0
+    time_ind = 0
+    time_step = 1
+    max_time = 500  # max_time*sleep_time_ms determines the pulse duration.
+    sleep_time_ms = 5
     while True:
-        await uasyncio.sleep_ms(5)
-        if duty <= 0:
-            step = 1
-        elif duty >= 512:
-            step = -1
+        await uasyncio.sleep_ms(sleep_time_ms)
+        if time_ind <= 0:
+            time_step = 1
+        elif time_ind >= max_time:
+            time_step = -1
 
-        duty += step
-        pwm_pins[0].duty(int(color[0]*duty/512))
-        pwm_pins[1].duty(int(color[1]*duty/512))
-        pwm_pins[2].duty(int(color[2]*duty/512))
+        time_ind += time_step
+        pwm_pins[0].duty(int(color[0]*time_ind/max_time))
+        pwm_pins[1].duty(int(color[1]*time_ind/max_time))
+        pwm_pins[2].duty(int(color[2]*time_ind/max_time))
 
         if current_mode != 0 or current_status != 1:
-            pwm_pins[0].duty(0)
-            pwm_pins[1].duty(0)
-            pwm_pins[2].duty(0)
+            turnOffOutput()
             break
+
     return False
 
 
-async def transitionColor(color):
+async def transitionColor(colors):
     global current_mode, current_status,pwm_pins
+    pairs = ((0,1),(1,2),(2,0))
+    color_deltas = []
+    max_time = 500  # max_time*sleep_time_ms determines the pulse duration.
+    sleep_time_ms = 5
+
+    for pair in pairs:
+        color_delta = (colors[pair[1]][0] - colors[pair[0]][0],colors[pair[1]][1] -
+                       colors[pair[0]][1],colors[pair[1]][2] - colors[pair[0]][2])
+        color_deltas.append(color_delta)
 
     while True:
-        await uasyncio.sleep_ms(5)
+
+        for pair,delta in zip(pairs,color_deltas):
+            for time_ind in range(max_time):
+                await uasyncio.sleep_ms(sleep_time_ms)
+                pwm_pins[0].duty(int(colors[pair[0]][0] + delta[0]*time_ind/max_time))
+                pwm_pins[1].duty(int(colors[pair[0]][1] + delta[1]*time_ind/max_time))
+                pwm_pins[2].duty(int(colors[pair[0]][2] + delta[2]*time_ind/max_time))
+                if current_mode != 1 or current_status != 1:
+                    break
 
         if current_mode != 1 or current_status != 1:
-            pwm_pins[0].duty(0)
+            turnOffOutput()
             break
     return False
 
@@ -79,7 +113,12 @@ async def staticColor(color):
     while True:
         await uasyncio.sleep_ms(5)
 
+        pwm_pins[0].duty(color[0])
+        pwm_pins[1].duty(color[1])
+        pwm_pins[2].duty(color[2])
+
         if current_mode != 2 or current_status != 1:
+            turnOffOutput()
             break
     return False
 
@@ -87,7 +126,7 @@ async def staticColor(color):
 @app.route("/")
 def index(req, resp):
 
-    global power_on,current_mode,modes,current_status,programming_flag
+    global power_on,current_mode,modes,current_status,programming_flag,colors,single_color
 
     if req.method == 'POST':
 
@@ -119,13 +158,13 @@ def index(req, resp):
 
         elif current_status == 2 and current_mode == 0:
             if "reprog_but" in req.form:
-                #set color
+                single_color = mapValues(convertColors(req.form["color_picker"]),255,512)
                 current_status = 1
 
         elif current_status == 2 and current_mode == 1:
             if "reprog_but" in req.form:
                 programming_flag += 1
-                #set one color each time confirm button is pressed
+                colors[programming_flag-1] = mapValues(convertColors(req.form["color_picker"]),255,512)
 
                 if programming_flag == 3:
                     programming_flag = 0
@@ -133,12 +172,15 @@ def index(req, resp):
 
         elif current_status == 2 and current_mode == 2:
             if "reprog_but" in req.form:
-                # set color
+                single_color = mapValues(convertColors(req.form["color_picker"]),255,512)
                 current_status = 1
+
     else:
         req.parse_qs()
 
     if current_status != 2:
+        for pin in pwm_pins:
+            pin.duty(0)
         uasyncio.create_task(updateCircuit())
 
     yield from picoweb.start_response(resp)
