@@ -5,6 +5,9 @@ import uasyncio
 pin_index = [14, 5, 4]
 pwm_pins = []
 
+#todo: Experiment with new lighting settings.
+#todo: If the same mode is selected twice in a row, diodes start to flicker - fix.
+
 for ind in pin_index:
     # pin = Pin(ind,Pin.OUT,Pin.PULL_DOWN)  # I recommend setting pins as PULL_DOWN if your hardware supports it.
     pin = Pin(ind, Pin.OUT)
